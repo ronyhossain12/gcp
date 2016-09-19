@@ -23,14 +23,14 @@ if($obj->isUserExists('adam29@gmail.com')) {
 
 echo '<br>Testing registration: ';
 
-$username = $_GET['username'];
-$password = $_GET['password'];
-$did = $_GET['did'];
-$email = $_GET['email'];
-$fname = $_GET['fname'];
-$lname = $_GET['lname'];
-$phone = $_GET['phone'];
-$user_type = $_GET['user_type'];
+$username = $_POST['username'];
+$password = $_POST['password'];
+$did = $_POST['did'];
+$email = $_POST['email'];
+$fname = $_POST['fname'];
+$lname = $_POST['lname'];
+$phone = $_POST['phone'];
+$user_type = $_POST['user_type'];
 $obj->register($username,$password,$did,$email,$fname, $lname,$phone, $user_type);
 
 

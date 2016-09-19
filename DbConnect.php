@@ -4,7 +4,7 @@ include 'Config.php';
 
 class DbConnect {
 
-    private $conn;
+    public $conn;
 
     function __construct() {        
     }

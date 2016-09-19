@@ -12,7 +12,7 @@ include 'DbConnect.php';
 
 class DbHandler {
 
-    private $conn;
+    public $conn;
 
     function __construct() {
         //require_once '/DbConnect.php';
@@ -29,7 +29,7 @@ class DbHandler {
      * @param String $email User login email id
      * @param String $password User login password
      */
-    public function register($did,$username,$email,$password,$name, $authen_key, $phone, $user_type) {
+    public function register($username,$password,$did,$email,$fname, $lname,$phone, $user_type) {
         require_once 'PassHash.php';
         $response = array();
 
@@ -43,8 +43,8 @@ class DbHandler {
 
             // insert query
 
-            $sql = "INSERT INTO test (did,username,email,password,fname,lname) 
-                    VALUES ($did,$username,$email,$password,$name, $authen_key, $phone, $user_type)";
+            $sql = "INSERT INTO users (username, password, did, email, fname, lname, phone, user_type) VALUES ('$username', '$password', $did, '$email', '$fname', '$lname', $phone, '$user_type')";
+            
 
             if ($this->conn->query($sql) === TRUE) {
                 echo "New record created successfully";
@@ -115,14 +115,19 @@ class DbHandler {
      * @param String $email email to check in db
      * @return boolean
      */
-    private function isUserExists($email) {
-        $stmt = $this->conn->prepare("SELECT id from users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-        $num_rows = $stmt->num_rows;
-        $stmt->close();
-        return $num_rows > 0;
+    public function isUserExists($email) {
+        
+       $q = "SELECT * FROM users WHERE email = '$email'";
+	   $r = mysqli_query($this->conn, $q); //Stores result as mysql objects
+	   $data = mysqli_fetch_assoc($r); //Converting mysql objects to arrays
+        
+       if (isset($data['email'])) {
+           $exists=true;
+       } else {
+           $exists=false;
+       }            
+    
+       return $exists;    
     }
 
     /**
@@ -130,24 +135,27 @@ class DbHandler {
      * @param String $email User email id
      */
     public function getUserByEmail($email) {
-        $stmt = $this->conn->prepare("SELECT name, email, api_key, status, created_at FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        if ($stmt->execute()) {
-            // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name, $email, $api_key, $status, $created_at);
-            $stmt->fetch();
-            $user = array();
-            $user["name"] = $name;
-            $user["email"] = $email;
-            $user["api_key"] = $api_key;
-            $user["status"] = $status;
-            $user["created_at"] = $created_at;
-            $stmt->close();
-            return $user;
-        } else {
-            return NULL;
-        }
+        
+       $q = "SELECT * FROM users WHERE email = '$email'";
+	   $r = mysqli_query($this->conn, $q); //Stores result as mysql objects
+	   $data = mysqli_fetch_assoc($r); //Converting mysql objects to arrays
+        
+       if (isset($data['email'])) {
+           $exists=true;
+       } else {
+           $exists=false;
+       }            
+    
+       return $exists;    
     }
+    
+    public function JsonConvert($data){
+        
+        
+        
+        
+    }
+    
 
 
 
